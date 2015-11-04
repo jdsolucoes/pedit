@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 
+# It works
 message = raw_input('Enter commit message: ')
 message_file_path = sys.argv[1]
 message_file = open(message_file_path, 'w')
