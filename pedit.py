@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 import sys
 
-# It works
-message = raw_input('Enter commit message: ')
-message_file_path = sys.argv[1]
-message_file = open(message_file_path, 'w')
-message_file.write(message)
-message_file.close()
+if __name__ == '__main__':
+    with open(sys.argv[1], 'w') as file_obj:
+        message = raw_input('Enter commit message: ')
+        file_obj.write(message)
