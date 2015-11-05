@@ -24,7 +24,7 @@ if __name__ == '__main__':
     with open(filename, 'w') as file_obj:
         try:
             lines = sys.stdin.readlines()
-            message = '\n'.join(lines)
+            message = ''.join(lines)
         except KeyboardInterrupt:
             print("Canceled!")
             sys.exit(1)
