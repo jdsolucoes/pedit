@@ -6,6 +6,7 @@ How to install
 
 ```bash
 git clone https://github.com/jdsolucoes/pedit.git
+cd pedit
 sudo ln -s `pwd`/pedit.py /usr/bin/pedit
 git config --global core.editor pedit
 ```
