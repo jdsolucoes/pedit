@@ -23,9 +23,7 @@ if __name__ == '__main__':
     print('Enter commit message bellow. Terminate with Ctrl + D.')
     with open(filename, 'w') as file_obj:
         try:
-            lines = []
-            for line in sys.stdin:
-                lines.append(line)
+            lines = sys.stdin.readlines()
             message = '\n'.join(lines)
         except KeyboardInterrupt:
             print("Canceled!")
