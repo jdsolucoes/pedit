@@ -49,3 +49,4 @@ if __name__ == '__main__':
         if not message and first_line:
             message = first_line
         file_obj.write(message)
+        file_obj.truncate()
