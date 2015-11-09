@@ -21,9 +21,14 @@ if __name__ == '__main__':
         sys.exit(1)
 
     print('Enter commit message bellow. Terminate with Ctrl + D.')
-    with open(filename, 'w') as file_obj:
+    with open(filename, 'r+') as file_obj:
+        first_line = file_obj.readlines()[0].rstrip()
+        if first_line:
+            print('{} < current message, press enter to keep'
+                  ' it.'.format(first_line))
         try:
             lines = sys.stdin.readlines()
+            import pdb; pdb.set_trace()
             message = ''.join(lines)
         except KeyboardInterrupt:
             print("Canceled!")
