@@ -21,10 +21,16 @@ if __name__ == '__main__':
         sys.exit(1)
 
     print('Enter commit message bellow. Terminate with Ctrl + D.')
-    with open(filename, 'w') as file_obj:
+    with open(filename, 'r+') as file_obj:
+        first_line = file_obj.readlines()[0].rstrip()
+        file_obj.seek(0)
+        if first_line and 'Merge' in first_line:
+            print('Press Ctrl + D to keep merge message.')
         try:
             lines = sys.stdin.readlines()
             message = ''.join(lines)
+            if not message and first_line:
+                message = first_line
         except KeyboardInterrupt:
             print("Canceled!")
             sys.exit(1)
