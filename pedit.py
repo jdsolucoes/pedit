@@ -16,7 +16,8 @@ except IOError:
 if __name__ == '__main__':
     try:
         filename = sys.argv[1]
-    except IndexError:
+        assert os.path.exists(filename)
+    except (IndexError, AssertionError):
         print("git config --global core.editor {}".format(sys.argv[0]))
         sys.exit(1)
 
@@ -25,7 +26,7 @@ if __name__ == '__main__':
         first_line = file_obj.readlines()[0].rstrip()
         file_obj.seek(0)
         if first_line and 'Merge' in first_line:
-            print('Press Ctrl + D to keep merge message.')
+            print('Press Ctrl + D to keep message: "{}"'.format(first_line))
         try:
             lines = sys.stdin.readlines()
             message = ''.join(lines)
