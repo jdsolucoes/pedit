@@ -28,7 +28,6 @@ if __name__ == '__main__':
                   ' it.'.format(first_line))
         try:
             lines = sys.stdin.readlines()
-            import pdb; pdb.set_trace()
             message = ''.join(lines)
         except KeyboardInterrupt:
             print("Canceled!")
