@@ -24,18 +24,21 @@ if __name__ == '__main__':
     if os.path.exists(HISTORY_FILE):
         readline.read_history_file(HISTORY_FILE)
 
+    args = sys.argv[0:]
     try:
-        filename = sys.argv[1]
+        filename = args[-1]
         assert os.path.exists(filename)
     except (IndexError, AssertionError):
         print("git config --global core.editor {}".format(sys.argv[0]))
         sys.exit(1)
 
-    print("Enter commit message bellow; enter '--' alone on the line to stop")
+    verbose = '-q' not in sys.argv
+    if verbose:
+        print("Enter commit message bellow; enter '--' alone on the line to stop")
     with open(filename, 'r+') as file_obj:
         first_line = file_obj.readlines()[0].rstrip()
         file_obj.seek(0)
-        if first_line and not first_line.startswith('#'):
+        if verbose and first_line and not first_line.startswith('#'):
             print('Default: "{}"'.format(first_line))
         lines = []
         while True:
