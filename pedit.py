@@ -24,12 +24,13 @@ if __name__ == '__main__':
     if os.path.exists(HISTORY_FILE):
         readline.read_history_file(HISTORY_FILE)
 
-    args = sys.argv[0:]
+    # 'command, *args = sys.argv' on Python 3...
+    command, args = sys.argv[0], sys.argv[1:]
     try:
         filename = args[-1]
         assert os.path.exists(filename)
     except (IndexError, AssertionError):
-        print("git config --global core.editor {}".format(sys.argv[0]))
+        print("git config --global core.editor {}".format(command))
         sys.exit(1)
 
     verbose = '-q' not in sys.argv
