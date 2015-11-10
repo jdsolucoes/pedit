@@ -35,9 +35,7 @@ if __name__ == '__main__':
     with open(filename, 'r+') as file_obj:
         first_line = file_obj.readlines()[0].rstrip()
         file_obj.seek(0)
-        if first_line and 'Merge' in first_line:
-            print('Press Ctrl + D to keep message: "{}"'.format(first_line))
-        elif first_line and not first_line.startswith('#'):
+        if first_line and not first_line.startswith('#'):
             print('Default: "{}"'.format(first_line))
         lines = []
         while True:
