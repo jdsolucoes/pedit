@@ -34,13 +34,20 @@ if __name__ == '__main__':
         sys.exit(1)
 
     verbose = '-q' not in sys.argv
+    italian_mode = '--maque' in sys.argv
     if verbose:
-        print("Enter commit message bellow; enter '--' alone on the line to stop")
+        if italian_mode:
+            print("Put tha commita messaja below; enter '--' to quita! maque!")
+        else:
+            print("Enter commit message bellow; enter '--' alone on the line to stop")
     with open(filename, 'r+') as file_obj:
         first_line = file_obj.readlines()[0].rstrip()
         file_obj.seek(0)
         if verbose and first_line and not first_line.startswith('#'):
-            print('Default: "{}"'.format(first_line))
+            if italian_mode:
+                print('Calzone!: "{}"'.format(first_line))
+            else:
+                print('Default: "{}"'.format(first_line))
         lines = []
         while True:
             try:
@@ -49,7 +56,10 @@ if __name__ == '__main__':
                 print('<eof>')
                 break
             except KeyboardInterrupt:
-                print("Canceled!")
+                if italian_mode:
+                    print("Mama mia!")
+                else:
+                    print("Canceled!")
                 sys.exit(1)
             if line == '--':
                 break
