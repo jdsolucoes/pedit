@@ -3,7 +3,11 @@ from __future__ import print_function
 
 import os
 import sys
-import readline
+
+try:
+    import gnureadline as readline
+except ImportError:
+    import readline
 
 HISTORY_FILE = '/tmp/pedit.hist'
 
@@ -13,6 +17,17 @@ except NameError:
     # Py3k
     get_input = input
 
+
+class DefaultText(object):
+    def __init__(self, text=''):
+        self._text = text
+        self._first_line = True
+
+    def pre_input_hook(self):
+        if self._first_line:
+            readline.insert_text(self._text)
+            readline.redisplay()
+        self._first_line = False
 
 if __name__ == '__main__':
     try:
@@ -39,8 +54,9 @@ if __name__ == '__main__':
     with open(filename, 'r+') as file_obj:
         first_line = file_obj.readlines()[0].rstrip()
         file_obj.seek(0)
-        if verbose and first_line and not first_line.startswith('#'):
-            print('Default: "{}"'.format(first_line))
+        if first_line and not first_line.startswith('#'):
+            default = DefaultText(first_line)
+            readline.set_pre_input_hook(default.pre_input_hook)
         lines = []
         while True:
             try:
