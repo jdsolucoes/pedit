@@ -19,7 +19,7 @@ def whatthecommit():
     """Return a random commit message"""
     commit_message = urllib.urlopen(
             'http://whatthecommit.com/index.txt').read()
-    return 'whatthecommit:{}'.format(commit_message)
+    return 'whatthecommit: {}'.format(commit_message)
 
 
 if __name__ == '__main__':
