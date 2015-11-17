@@ -4,6 +4,7 @@ from __future__ import print_function
 import os
 import sys
 import readline
+import urllib
 
 HISTORY_FILE = '/tmp/pedit.hist'
 
@@ -12,6 +13,13 @@ try:
 except NameError:
     # Py3k
     get_input = input
+
+
+def whatthecommit():
+    """Return a random commit message"""
+    commit_message = urllib.urlopen(
+            'http://whatthecommit.com/index.txt').read()
+    return commit_message
 
 
 if __name__ == '__main__':
@@ -34,6 +42,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     verbose = '-q' not in sys.argv
+    wat = '--wat' in sys.argv
     if verbose:
         print("Enter commit message bellow; enter '--' alone on the line to stop")
     with open(filename, 'r+') as file_obj:
@@ -57,6 +66,8 @@ if __name__ == '__main__':
         message = '\n'.join(lines)
         if not message and first_line:
             message = first_line
+        elif not message and wat:
+            message = whatthecommit()
         file_obj.write(message)
         file_obj.truncate()
         readline.write_history_file(HISTORY_FILE)
