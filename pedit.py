@@ -3,10 +3,12 @@ from __future__ import print_function
 
 import os
 import sys
+import warnings
 
 try:
     import gnureadline as readline
 except ImportError:
+    warnings.warn('No gnureadline found, may have missing functionality')
     import readline
 
 HISTORY_FILE = '/tmp/pedit.hist'
