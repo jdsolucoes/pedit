@@ -50,9 +50,13 @@ if __name__ == '__main__':
 
     verbose = '-q' not in sys.argv
     if verbose:
-        print("Enter commit message bellow; enter '--' alone on the line to stop")
+        print("Enter commit message bellow; enter '--' alone on the line to save")
     with open(filename, 'r+') as file_obj:
-        first_line = file_obj.readlines()[0].rstrip()
+        try:
+            first_line = file_obj.readlines()[0].rstrip()
+        except IndexError:
+            # Empty file
+            first_line = ''
         file_obj.seek(0)
         if first_line and not first_line.startswith('#'):
             default = DefaultText(first_line)

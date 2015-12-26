@@ -1,5 +1,7 @@
-A simple yet usefull one line editor for short commit messages
+A simple yet usefull editor for short stuff, like commit messages.
+In case you don't want a full-blown editor just to enter some text.
 
+Only displays a new line on enter. Line edit functions are provided by GNU Readline.
 
 ## Pedit!
 ![Italian hand]
@@ -11,10 +13,11 @@ How to install
 On bash:
 
 ```bash
-pip install gnureadline # recomended
-git clone https://github.com/jdsolucoes/pedit.git
-cd pedit
+# Recomended -- history, line edition and kill-ring (copy/paste)
+pip install gnureadline
+git clone https://github.com/jdsolucoes/pedit.git; cd pedit
 sudo ln -s `pwd`/pedit.py /usr/bin/pedit
+# Or just `pedit` -- without args, it outputs the git config command
 git config --global core.editor pedit
 ```
 
@@ -22,14 +25,14 @@ git config --global core.editor pedit
 On [fish](http://fishshell.com):
 
 ```fish
-pip install gnureadline # recomended
+# Recomended -- history, line edition and kill-ring (copy/paste)
+pip install gnureadline
 git clone https://github.com/jdsolucoes/pedit.git; cd pedit
 sudo ln -s (pwd)/pedit.py /usr/bin/pedit
 eval (pedit) # to configure git
 ```
 
-
-...and its done!
+...and its done! Start commiting!
 
 Configuration
 =============
@@ -42,3 +45,9 @@ For example, the default editing mode is `emacs`. If you prefer vi-style keybind
 ```
 set editing-mode vi
 ```
+
+TODO
+====
+
+ * Integration with Mercurial, Bazaar, etc
+ * Integration with the system's clipboard
