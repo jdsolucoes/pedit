@@ -50,4 +50,5 @@ TODO
 ====
 
  * Integration with Mercurial, Bazaar, etc
- * Integration with the system's clipboard
+ * Integration with the system's clipboard (yes, it's possible with readline)
+ * Full featured support for pypy
