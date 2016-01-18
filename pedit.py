@@ -18,7 +18,7 @@ toolbar_style = PygmentsStyle.from_defaults({
 def get_toolbar(cli):
     toolbar_text = ('Press [Meta+Enter] or [Esc] followed by [Enter] to '
                     'accept input.')
-    return [(Token.Toolbar, toolbar_text)]
+    return [(Token.Toolbar, toolbar_text), (Token.Toolbar, ' :D')]
 
 
 def get_modified_files():
@@ -59,7 +59,7 @@ if __name__ == '__main__':
                 get_bottom_toolbar_tokens=get_toolbar,
                 default='%s' % default,
                 style=toolbar_style)
-        except KeyboardInterrupt:
+        except (KeyboardInterrupt, EOFError):
             sys.exit(1)
         if not message and first_line:
             message = first_line
