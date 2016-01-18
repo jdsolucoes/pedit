@@ -26,7 +26,9 @@ def get_modified_files():
         ['git', 'status', '--porcelain']).split('\n') if x]
     if files:
         return WordCompleter(
-            [x[2:].strip() for x in files if x.startswith('M')],
+            [x[2:].strip()
+                for x in files
+                if x.startswith('M') or x.startswith('A')],
             ignore_case=True, WORD=True)
 
 
