@@ -40,9 +40,14 @@ if __name__ == '__main__':
             first_line = ''
         file_obj.seek(0)
         modified_files = get_modified_files()
+        if first_line and not first_line.startswith('#'):
+            default = first_line
+        else:
+            default = ''
         try:
             message = prompt('>> ', multiline=True, completer=modified_files,
-                             display_completions_in_columns=True)
+                             display_completions_in_columns=True,
+                             default='%s' % default)
         except KeyboardInterrupt:
             sys.exit(1)
         if not message and first_line:
