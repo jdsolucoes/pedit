@@ -1,16 +1,21 @@
 #!/usr/bin/env python
 from __future__ import print_function
 from __future__ import unicode_literals
+from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit import prompt
 
 import os
 import subprocess
 import sys
-from prompt_toolkit import prompt
 
-def get_git_info():
-    output = [x.strip() for x in subprocess.check_output(
+
+def get_modified_files():
+    files = [x.strip() for x in subprocess.check_output(
         ['git', 'status', '--porcelain']).split('\n') if x]
-    return output
+    if files:
+        return WordCompleter(
+            [x[2:] for x in files if x.startswith('M')],
+            ignore_case=True, match_middle=True)
 
 
 if __name__ == '__main__':
@@ -34,7 +39,9 @@ if __name__ == '__main__':
             # Empty file
             first_line = ''
         file_obj.seek(0)
-        message = prompt('>> ', multiline=True)
+        # modified_files = get_modified_files()
+        message = prompt('>> ', multiline=True,
+                         display_completions_in_columns=True)
         if not message and first_line:
             message = first_line
         file_obj.write(message)
