@@ -15,7 +15,7 @@ def get_modified_files():
     if files:
         return WordCompleter(
             [x[2:] for x in files if x.startswith('M')],
-            ignore_case=True, match_middle=True)
+            ignore_case=True, WORD=True)
 
 
 if __name__ == '__main__':
@@ -39,9 +39,12 @@ if __name__ == '__main__':
             # Empty file
             first_line = ''
         file_obj.seek(0)
-        # modified_files = get_modified_files()
-        message = prompt('>> ', multiline=True,
-                         display_completions_in_columns=True)
+        modified_files = get_modified_files()
+        try:
+            message = prompt('>> ', multiline=True, completer=modified_files,
+                             display_completions_in_columns=True)
+        except KeyboardInterrupt:
+            sys.exit(1)
         if not message and first_line:
             message = first_line
         file_obj.write(message)
