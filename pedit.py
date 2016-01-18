@@ -3,10 +3,22 @@ from __future__ import print_function
 from __future__ import unicode_literals
 from prompt_toolkit.contrib.completers import WordCompleter
 from prompt_toolkit import prompt
+from prompt_toolkit.styles import PygmentsStyle
+from pygments.token import Token
 
 import os
 import subprocess
 import sys
+
+toolbar_style = PygmentsStyle.from_defaults({
+    Token.Toolbar: '#ffffff bg:#333333',
+})
+
+
+def get_toolbar(cli):
+    toolbar_text = ('Press [Meta+Enter] or [Esc] followed by [Enter] to '
+                    'accept input.')
+    return [(Token.Toolbar, toolbar_text)]
 
 
 def get_modified_files():
@@ -14,7 +26,7 @@ def get_modified_files():
         ['git', 'status', '--porcelain']).split('\n') if x]
     if files:
         return WordCompleter(
-            [x[2:] for x in files if x.startswith('M')],
+            [x[2:].strip() for x in files if x.startswith('M')],
             ignore_case=True, WORD=True)
 
 
@@ -28,10 +40,6 @@ if __name__ == '__main__':
         print("git config --global core.editor {}".format(command))
         sys.exit(1)
 
-    verbose = '-q' not in sys.argv
-    if verbose:
-        print('Press [Meta+Enter] or [Esc] followed by [Enter] to '
-              'accept input.')
     with open(filename, 'r+') as file_obj:
         try:
             first_line = file_obj.readlines()[0].rstrip()
@@ -45,9 +53,12 @@ if __name__ == '__main__':
         else:
             default = ''
         try:
-            message = prompt('>> ', multiline=True, completer=modified_files,
-                             display_completions_in_columns=True,
-                             default='%s' % default)
+            message = prompt(
+                '>> ', multiline=True, completer=modified_files,
+                display_completions_in_columns=True,
+                get_bottom_toolbar_tokens=get_toolbar,
+                default='%s' % default,
+                style=toolbar_style)
         except KeyboardInterrupt:
             sys.exit(1)
         if not message and first_line:
