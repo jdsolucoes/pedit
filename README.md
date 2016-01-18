@@ -13,8 +13,7 @@ How to install
 On bash:
 
 ```bash
-# Recomended -- history, line edition and kill-ring (copy/paste)
-pip install gnureadline
+pip install prompt-toolkit
 git clone https://github.com/jdsolucoes/pedit.git; cd pedit
 sudo ln -s `pwd`/pedit.py /usr/bin/pedit
 # Or just `pedit` -- without args, it outputs the git config command
@@ -25,26 +24,13 @@ git config --global core.editor pedit
 On [fish](http://fishshell.com):
 
 ```fish
-# Recomended -- history, line edition and kill-ring (copy/paste)
-pip install gnureadline
+pip install prompt-toolkit
 git clone https://github.com/jdsolucoes/pedit.git; cd pedit
 sudo ln -s (pwd)/pedit.py /usr/bin/pedit
 eval (pedit) # to configure git
 ```
 
 ...and its done! Start commiting!
-
-Configuration
-=============
-
-You can alter the [readline options](https://tiswww.case.edu/php/chet/readline/readline.html#SEC10)
-by creating a `~/pedit.rc` file.
-
-For example, the default editing mode is `emacs`. If you prefer vi-style keybindings:
-
-```
-set editing-mode vi
-```
 
 TODO
 ====
