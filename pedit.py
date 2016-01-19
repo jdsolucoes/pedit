@@ -43,17 +43,12 @@ if __name__ == '__main__':
         sys.exit(1)
 
     with open(filename, 'r+') as file_obj:
-        try:
-            first_line = file_obj.readlines()[0].rstrip()
-        except IndexError:
-            # Empty file
-            first_line = ''
+        commit_lines = [x.strip() for x in file_obj.readlines()
+                        if not x.startswith('#') and x]
+
         file_obj.seek(0)
         modified_files = get_modified_files()
-        if first_line and not first_line.startswith('#'):
-            default = first_line
-        else:
-            default = ''
+        default = '\n'.join(commit_lines) if commit_lines else ''
         try:
             message = prompt(
                 '>> ', multiline=True, completer=modified_files,
@@ -63,7 +58,5 @@ if __name__ == '__main__':
                 style=toolbar_style)
         except (KeyboardInterrupt, EOFError):
             sys.exit(1)
-        if not message and first_line:
-            message = first_line
         file_obj.write(message)
         file_obj.truncate()
