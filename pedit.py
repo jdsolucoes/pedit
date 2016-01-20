@@ -119,9 +119,12 @@ if __name__ == '__main__':
         print("git config --global core.editor {}".format(command))
         sys.exit(1)
 
+    commit_lines = []
     with open(filename, 'r+') as file_obj:
-        commit_lines = [x.strip() for x in file_obj.readlines()
-                        if not x.startswith('#') and x]
+        for line in file_obj.readlines():
+            line = line.decode('utf-8').strip()
+            if line and not line.startswith('#'):
+                commit_lines.append(line)
 
         file_obj.seek(0)
         default = '\n'.join(commit_lines) if commit_lines else ''
