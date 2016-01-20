@@ -16,8 +16,7 @@ On bash:
 pip install prompt-toolkit
 git clone https://github.com/jdsolucoes/pedit.git; cd pedit
 sudo ln -s `pwd`/pedit.py /usr/bin/pedit
-# Or just `pedit` -- without args, it outputs the git config command
-git config --global core.editor pedit
+`pedit` # to configure git
 ```
 
 
