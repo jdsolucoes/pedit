@@ -13,8 +13,8 @@ How to install
 On bash:
 
 ```bash
-pip install prompt-toolkit
 git clone https://github.com/jdsolucoes/pedit.git; cd pedit
+pip install -r requirements.txt
 sudo ln -s `pwd`/pedit.py /usr/bin/pedit
 `pedit` # to configure git
 ```
@@ -23,8 +23,8 @@ sudo ln -s `pwd`/pedit.py /usr/bin/pedit
 On [fish](http://fishshell.com):
 
 ```fish
-pip install prompt-toolkit
 git clone https://github.com/jdsolucoes/pedit.git; cd pedit
+pip install -r requirements.txt
 sudo ln -s (pwd)/pedit.py /usr/bin/pedit
 eval (pedit) # to configure git
 ```
