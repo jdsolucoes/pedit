@@ -10,10 +10,17 @@ import os
 import subprocess
 import sys
 
+toolbar_style = PygmentsStyle.from_defaults({
+    Token.Toolbar: '#ffffff bg:#333333',
+    Token.Branch: '#FF1A00 bg:#333333',
+    Token.SCM: '#7072FF bg:#333333',
+    Token.ADD: '#28FF1C'
+})
 
 # GIT COMMANDS
 GIT_STATUS = ['git', 'status', '--porcelain']
 GIT_BRANCH = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
+GIT_MODIFICATIONS = ['git', '--no-pager',  'diff', '--numstat', 'HEAD']
 
 
 def git_it(cmd):
@@ -27,23 +34,29 @@ def get_current_branch():
     return branch_name[0]
 
 
+def get_modifications():
+    modifications = git_it(GIT_MODIFICATIONS)
+    output = {}
+    for modification in modifications:
+        a, r, f = modification.split('\t')
+        output[f] = (a, r)
+    return output
+
+
 class GitCompleter(Completer):
 
     def __init__(self, *args, **kwargs):
         files = git_it(GIT_STATUS)
         self.files = []
-        self.meta_data = {}
+        self.modifications = get_modifications()
         for f in files:
             # its a addition
             if f.startswith('M') or f.startswith('A'):
                 # modified file or added file
                 self.files.append(f[2:].strip())
-                self.meta_data[f[2:].strip()] = 'Adition/Modification of file'
             elif f.startswith('R'):
                 # renamed
                 self.files.append(f[2:].replace('->', 'to').strip())
-                self.meta_data[f[2:]] = 'Rename of file'
-
         super(GitCompleter)
 
     def get_completions(self, document, complete_event):
@@ -51,18 +64,13 @@ class GitCompleter(Completer):
         current_word = word_before_cursor.split(' ')[-1]
         for f in self.files:
             if f.startswith(current_word) and current_word:
-                meta_info = self.meta_data.get(f, '')
+                meta_info = self.modifications.get(f)
+                if meta_info:
+                    meta_msg = '%s insertions(+), %s deletions(-)' % meta_info
+                else:
+                    meta_msg = ''
                 yield Completion(f, -len(current_word),
-                                 display_meta=meta_info)
-
-toolbar_style = PygmentsStyle.from_defaults({
-    Token.Toolbar: '#ffffff bg:#333333',
-    Token.Branch: '#FF1A00 bg:#333333',
-    Token.SCM: '#7072FF bg:#333333'
-})
-
-
-
+                                 display_meta=meta_msg)
 
 
 def get_toolbar(cli):
