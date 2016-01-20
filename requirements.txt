@@ -1,1 +1,1 @@
-prompt-toolkit
+prompt-toolkit==0.57
