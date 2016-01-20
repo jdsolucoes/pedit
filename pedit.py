@@ -16,9 +16,16 @@ class GitCompleter(Completer):
     def __init__(self, *args, **kwargs):
         files = [x.strip() for x in subprocess.check_output(
             ['git', 'status', '--porcelain']).split('\n') if x]
-        self.files = [x[2:].strip()
-                      for x in files
-                      if x.startswith('M') or x.startswith('A')]
+        self.files = []
+        for f in files:
+            # its a addition
+            if f.startswith('M') or f.startswith('A'):
+                # modified file or added file
+                self.files.append(f[2:].strip())
+            elif f.startswith('R'):
+                # renamed
+                self.files.append(f[2:].replace('->', 'to').strip())
+
         super(GitCompleter)
 
     def get_completions(self, document, complete_event):
