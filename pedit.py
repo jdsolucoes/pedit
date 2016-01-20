@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 from __future__ import unicode_literals
 from prompt_toolkit.completion import Completer, Completion
@@ -13,19 +14,20 @@ import sys
 toolbar_style = PygmentsStyle.from_defaults({
     Token.Toolbar: '#ffffff bg:#333333',
     Token.Branch: '#FF1A00 bg:#333333',
-    Token.SCM: '#7072FF bg:#333333',
-    Token.ADD: '#28FF1C'
+    Token.SCM: '#7072FF bg:#333333'
 })
 
 # GIT COMMANDS
 GIT_STATUS = ['git', 'status', '--porcelain']
 GIT_BRANCH = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
 GIT_MODIFICATIONS = ['git', '--no-pager',  'diff', '--numstat', 'HEAD']
+GIT_AUTHORS = ["git", "log", "--format=%aN"]
 
 
 def git_it(cmd):
     """Execute a GIT command and return the results"""
-    return [x.strip() for x in subprocess.check_output(cmd).split('\n') if x]
+    output = subprocess.check_output(cmd).decode('utf-8').split('\n')
+    return [x.strip() for x in output if x]
 
 
 def get_current_branch():
@@ -43,12 +45,18 @@ def get_modifications():
     return output
 
 
+def get_authors():
+    authors = git_it(GIT_AUTHORS)
+    return set(authors)
+
+
 class GitCompleter(Completer):
 
     def __init__(self, *args, **kwargs):
         files = git_it(GIT_STATUS)
         self.files = []
         self.modifications = get_modifications()
+        self.authors = get_authors()
         for f in files:
             # its a addition
             if f.startswith('M') or f.startswith('A'):
@@ -59,18 +67,33 @@ class GitCompleter(Completer):
                 self.files.append(f[2:].replace('->', 'to').strip())
         super(GitCompleter)
 
-    def get_completions(self, document, complete_event):
-        word_before_cursor = document.text_before_cursor
-        current_word = word_before_cursor.split(' ')[-1]
+    def get_files(self, word_before_cursor, current_word):
+        current_word = current_word[2:]
         for f in self.files:
-            if f.startswith(current_word) and current_word:
+            if f.startswith(current_word):
                 meta_info = self.modifications.get(f)
                 if meta_info:
                     meta_msg = '%s insertions(+), %s deletions(-)' % meta_info
                 else:
                     meta_msg = ''
-                yield Completion(f, -len(current_word),
+                yield Completion(f, -len(current_word) - 2,
                                  display_meta=meta_msg)
+
+    def get_authors(self, word_before_cursor, current_word):
+        current_word = current_word[1:]
+        for f in self.authors:
+            if f.startswith(current_word):
+                yield Completion(f, -len(current_word) - 1)
+
+    def get_completions(self, document, complete_event):
+        word_before_cursor = document.text_before_cursor
+        current_word = word_before_cursor.split(' ')[-1]
+        if current_word.startswith('f:'):
+            return self.get_files(word_before_cursor, current_word)
+        elif current_word.startswith('@'):
+            return self.get_authors(word_before_cursor, current_word)
+        else:
+            return []
 
 
 def get_toolbar(cli):
