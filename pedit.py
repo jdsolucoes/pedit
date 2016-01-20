@@ -133,6 +133,7 @@ if __name__ == '__main__':
                 default='%s' % default,
                 style=toolbar_style,
                 get_title=get_title,
+                enable_system_bindings=True,
             )
         except (KeyboardInterrupt, EOFError):
             sys.exit(1)
