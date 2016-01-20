@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 from __future__ import print_function
 from __future__ import unicode_literals
-from prompt_toolkit.contrib.completers import WordCompleter
+from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit import prompt
 from prompt_toolkit.styles import PygmentsStyle
 from pygments.token import Token
@@ -9,23 +9,32 @@ from pygments.token import Token
 import os
 import subprocess
 import sys
+import logging
+logging.basicConfig(filename='example.log', level=logging.DEBUG)
+
+
+class GitCompleter(Completer):
+
+    def __init__(self, *args, **kwargs):
+        files = [x.strip() for x in subprocess.check_output(
+            ['git', 'status', '--porcelain']).split('\n') if x]
+        self.files = [x[2:].strip()
+                      for x in files
+                      if x.startswith('M') or x.startswith('A')]
+        super(GitCompleter)
+
+    def get_completions(self, document, complete_event):
+        word_before_cursor = document.text_before_cursor
+        current_word = word_before_cursor.split(' ')[-1]
+        for f in self.files:
+            if f.startswith(current_word) and current_word:
+                yield Completion(f, -len(current_word))
 
 toolbar_style = PygmentsStyle.from_defaults({
     Token.Toolbar: '#ffffff bg:#333333',
     Token.Branch: '#FF1A00 bg:#333333',
     Token.SCM: '#7072FF bg:#333333'
 })
-
-
-def get_modified_files():
-    files = [x.strip() for x in subprocess.check_output(
-        ['git', 'status', '--porcelain']).split('\n') if x]
-    if files:
-        return WordCompleter(
-            [x[2:].strip()
-                for x in files
-                if x.startswith('M') or x.startswith('A')],
-            ignore_case=True, WORD=True)
 
 
 def get_current_branch():
@@ -60,11 +69,10 @@ if __name__ == '__main__':
                         if not x.startswith('#') and x]
 
         file_obj.seek(0)
-        modified_files = get_modified_files()
         default = '\n'.join(commit_lines) if commit_lines else ''
         try:
             message = prompt(
-                '>> ', multiline=True, completer=modified_files,
+                '>> ', multiline=True, completer=GitCompleter(),
                 display_completions_in_columns=True,
                 get_bottom_toolbar_tokens=get_toolbar,
                 default='%s' % default,
