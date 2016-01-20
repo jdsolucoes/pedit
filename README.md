@@ -1,7 +1,7 @@
 A simple yet usefull editor for short stuff, like commit messages.
 In case you don't want a full-blown editor just to enter some text.
 
-Only displays a new line on enter. Line edit functions are provided by GNU Readline.
+Only displays a new line on enter. Line edit functions are provided by [prompt-toolkit](https://github.com/jonathanslenders/python-prompt-toolkit)
 
 ## Pedit!
 ![Italian hand]
