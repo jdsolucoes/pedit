@@ -11,20 +11,38 @@ import subprocess
 import sys
 
 
+# GIT COMMANDS
+GIT_STATUS = ['git', 'status', '--porcelain']
+GIT_BRANCH = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
+
+
+def git_it(cmd):
+    """Execute a GIT command and return the results"""
+    return [x.strip() for x in subprocess.check_output(cmd).split('\n') if x]
+
+
+def get_current_branch():
+    """Get the branch name and some info for the toolbar"""
+    branch_name = git_it(GIT_BRANCH)
+    return branch_name[0]
+
+
 class GitCompleter(Completer):
 
     def __init__(self, *args, **kwargs):
-        files = [x.strip() for x in subprocess.check_output(
-            ['git', 'status', '--porcelain']).split('\n') if x]
+        files = git_it(GIT_STATUS)
         self.files = []
+        self.meta_data = {}
         for f in files:
             # its a addition
             if f.startswith('M') or f.startswith('A'):
                 # modified file or added file
                 self.files.append(f[2:].strip())
+                self.meta_data[f[2:].strip()] = 'Adition/Modification of file'
             elif f.startswith('R'):
                 # renamed
                 self.files.append(f[2:].replace('->', 'to').strip())
+                self.meta_data[f[2:]] = 'Rename of file'
 
         super(GitCompleter)
 
@@ -33,7 +51,9 @@ class GitCompleter(Completer):
         current_word = word_before_cursor.split(' ')[-1]
         for f in self.files:
             if f.startswith(current_word) and current_word:
-                yield Completion(f, -len(current_word))
+                meta_info = self.meta_data.get(f, '')
+                yield Completion(f, -len(current_word),
+                                 display_meta=meta_info)
 
 toolbar_style = PygmentsStyle.from_defaults({
     Token.Toolbar: '#ffffff bg:#333333',
@@ -42,12 +62,7 @@ toolbar_style = PygmentsStyle.from_defaults({
 })
 
 
-def get_current_branch():
-    """Get the branch name and some info for the toolbar"""
-    branch_name = subprocess.check_output(
-        ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
-    )
-    return branch_name.strip()
+
 
 
 def get_toolbar(cli):
