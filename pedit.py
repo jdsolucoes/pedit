@@ -9,8 +9,6 @@ from pygments.token import Token
 import os
 import subprocess
 import sys
-import logging
-logging.basicConfig(filename='example.log', level=logging.DEBUG)
 
 
 class GitCompleter(Completer):
