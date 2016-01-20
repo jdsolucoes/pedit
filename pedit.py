@@ -12,13 +12,9 @@ import sys
 
 toolbar_style = PygmentsStyle.from_defaults({
     Token.Toolbar: '#ffffff bg:#333333',
+    Token.Branch: '#FF1A00 bg:#333333',
+    Token.SCM: '#7072FF bg:#333333'
 })
-
-
-def get_toolbar(cli):
-    toolbar_text = ('Press [Meta+Enter] or [Esc] followed by [Enter] to '
-                    'accept input.')
-    return [(Token.Toolbar, toolbar_text), (Token.Toolbar, ' :D')]
 
 
 def get_modified_files():
@@ -30,6 +26,23 @@ def get_modified_files():
                 for x in files
                 if x.startswith('M') or x.startswith('A')],
             ignore_case=True, WORD=True)
+
+
+def get_current_branch():
+    """Get the branch name and some info for the toolbar"""
+    branch_name = subprocess.check_output(
+        ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
+    )
+    return branch_name.strip()
+
+
+def get_toolbar(cli):
+    toolbar_text = ('Press [Meta+Enter] or [Esc] followed by [Enter] to '
+                    'accept input. ')
+    return [(Token.Toolbar, toolbar_text),
+            (Token.SCM, 'git('),
+            (Token.Branch, '%s' % get_current_branch()),
+            (Token.SCM, ') ')]
 
 
 if __name__ == '__main__':
