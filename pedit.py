@@ -105,6 +105,10 @@ def get_toolbar(cli):
             (Token.SCM, ') ')]
 
 
+def get_title():
+    return "Pedit!"
+
+
 if __name__ == '__main__':
     # 'command, *args = sys.argv' on Python 3...
     command, args = sys.argv[0], sys.argv[1:]
@@ -127,7 +131,9 @@ if __name__ == '__main__':
                 display_completions_in_columns=True,
                 get_bottom_toolbar_tokens=get_toolbar,
                 default='%s' % default,
-                style=toolbar_style)
+                style=toolbar_style,
+                get_title=get_title,
+            )
         except (KeyboardInterrupt, EOFError):
             sys.exit(1)
         file_obj.write(message)
