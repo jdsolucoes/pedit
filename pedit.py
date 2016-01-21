@@ -125,7 +125,7 @@ class GitCompleter(Completer):
 def get_toolbar(cli):
     toolbar_text = ('Press [Meta+Enter] or [Esc] followed by [Enter] to '
                     'accept input. ')
-    if hasattr(cli, 'quit'):
+    if getattr(cli, 'quit', False) is True:
         return [(Token.QUIT,
                  'Are you sure that you want to quit? press again')]
     if getattr(cli, 'show_git', False) is True:
