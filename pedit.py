@@ -43,10 +43,7 @@ def _(event):
 @manager.registry.add_binding(Keys.ControlG)
 def show_git(event):
     def quit_it():
-        if getattr(event.cli, 'show_git', False) is True:
-            event.cli.show_git = False
-        else:
-            event.cli.show_git = True
+        event.cli.show_git = True
     event.cli.run_in_terminal(quit_it)
 
 
@@ -129,6 +126,7 @@ def get_toolbar(cli):
         return [(Token.QUIT,
                  'Are you sure that you want to quit? press again')]
     if getattr(cli, 'show_git', False) is True:
+        cli.show_git = False
         return [(Token.SCM, 'git('),
                 (Token.Branch, '%s' % get_current_branch()),
                 (Token.SCM, ') ')]
