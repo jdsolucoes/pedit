@@ -9,8 +9,11 @@ In case you don't want a full-blown editor just to enter some text.
 Demo
 ====
 
-![GIF]
+![GIF1]
 (http://g.recordit.co/0ZyYZwwJtb.gif)
+
+![GIF2]
+(http://g.recordit.co/H2i802rIHT.gif)
 
 
 How to install
