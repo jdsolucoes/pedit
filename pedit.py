@@ -18,8 +18,7 @@ manager = KeyBindingManager.for_prompt()
 
 toolbar_style = PygmentsStyle.from_defaults({
     Token.Toolbar: '#ffffff bg:#333333',
-    Token.Branch: '#FF1A00 bg:#333333',
-    Token.SCM: '#7072FF bg:#333333',
+    Token.SCM: '#FF1A00 bg:#333333',
     Token.QUIT: '#ffffff bg:#ff0000'
 })
 
@@ -127,9 +126,8 @@ def get_toolbar(cli):
                  'Are you sure that you want to quit? press again')]
     if getattr(cli, 'show_git', False) is True:
         cli.show_git = False
-        return [(Token.SCM, 'git('),
-                (Token.Branch, '%s' % get_current_branch()),
-                (Token.SCM, ') ')]
+        return [(Token.Toolbar, 'GIT Branch: '),
+                (Token.SCM, '%s' % get_current_branch())]
     date = datetime.now().strftime('%d/%m/%Y %H:%M')
     return [(Token.Toolbar, toolbar_text),
             (Token.Toolbar, date)]
