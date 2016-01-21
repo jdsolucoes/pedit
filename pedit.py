@@ -12,6 +12,7 @@ from datetime import datetime
 
 import os
 import subprocess
+import random
 import sys
 
 manager = KeyBindingManager.for_prompt()
@@ -134,7 +135,17 @@ def get_toolbar(cli):
 
 
 def get_title():
-    return "Pedit!"
+    phrases = [
+        'Drink a lot of fluids',
+        'Remeber to take breaks',
+        '50 chars per line at most',
+        'Less is more',
+        'Press META+G to view GIT info',
+        'Press META+! to run system commands',
+        'Write f: to view modified files',
+        'Write @ to view authors names'
+    ]
+    return "Pedit! {}".format(random.choice(phrases))
 
 
 if __name__ == '__main__':
