@@ -1,16 +1,17 @@
 A simple yet usefull editor for short stuff, like commit messages.
 In case you don't want a full-blown editor just to enter some text.
 
-
 ## Pedit!
 ![Italian hand]
 (http://static.memrise.com/uploads/course_photos/969204000140323231243.jpg)
+
 
 Demo
 ====
 
 ![GIF]
 (http://g.recordit.co/0ZyYZwwJtb.gif)
+
 
 How to install
 ==============
