@@ -161,6 +161,7 @@ if __name__ == '__main__':
             display_completions_in_columns=True,
             get_bottom_toolbar_tokens=get_toolbar,
             key_bindings_registry=manager.registry,
+            get_title=get_title,
             default='%s' % default,
             enable_system_bindings=True,
             style=toolbar_style)
