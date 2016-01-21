@@ -6,15 +6,21 @@ from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit import prompt
 from prompt_toolkit.styles import PygmentsStyle
 from pygments.token import Token
+from prompt_toolkit.key_binding.manager import KeyBindingManager
+from prompt_toolkit.keys import Keys
+from datetime import datetime
 
 import os
 import subprocess
 import sys
 
+manager = KeyBindingManager.for_prompt()
+
 toolbar_style = PygmentsStyle.from_defaults({
     Token.Toolbar: '#ffffff bg:#333333',
     Token.Branch: '#FF1A00 bg:#333333',
-    Token.SCM: '#7072FF bg:#333333'
+    Token.SCM: '#7072FF bg:#333333',
+    Token.QUIT: '#ffffff bg:#ff0000'
 })
 
 # GIT COMMANDS
@@ -22,6 +28,26 @@ GIT_STATUS = ['git', 'status', '--porcelain']
 GIT_BRANCH = ['git', 'rev-parse', '--abbrev-ref', 'HEAD']
 GIT_MODIFICATIONS = ['git', '--no-pager',  'diff', '--numstat', 'HEAD']
 GIT_AUTHORS = ["git", "log", "--format=%aN"]
+
+
+@manager.registry.add_binding(Keys.ControlC)
+@manager.registry.add_binding(Keys.ControlD)
+def _(event):
+    def quit_it():
+        if getattr(event.cli, 'quit', False) is True:
+            sys.exit(0)
+        event.cli.quit = True
+    event.cli.run_in_terminal(quit_it)
+
+
+@manager.registry.add_binding(Keys.ControlG)
+def show_git(event):
+    def quit_it():
+        if getattr(event.cli, 'show_git', False) is True:
+            event.cli.show_git = False
+        else:
+            event.cli.show_git = True
+    event.cli.run_in_terminal(quit_it)
 
 
 def git_it(cmd):
@@ -99,10 +125,16 @@ class GitCompleter(Completer):
 def get_toolbar(cli):
     toolbar_text = ('Press [Meta+Enter] or [Esc] followed by [Enter] to '
                     'accept input. ')
+    if hasattr(cli, 'quit'):
+        return [(Token.QUIT,
+                 'Are you sure that you want to quit? press again')]
+    if getattr(cli, 'show_git', False) is True:
+        return [(Token.SCM, 'git('),
+                (Token.Branch, '%s' % get_current_branch()),
+                (Token.SCM, ') ')]
+    date = datetime.now().strftime('%d/%m/%Y %H:%M')
     return [(Token.Toolbar, toolbar_text),
-            (Token.SCM, 'git('),
-            (Token.Branch, '%s' % get_current_branch()),
-            (Token.SCM, ') ')]
+            (Token.Toolbar, date)]
 
 
 if __name__ == '__main__':
@@ -121,14 +153,12 @@ if __name__ == '__main__':
 
         file_obj.seek(0)
         default = '\n'.join(commit_lines) if commit_lines else ''
-        try:
-            message = prompt(
-                '>> ', multiline=True, completer=GitCompleter(),
-                display_completions_in_columns=True,
-                get_bottom_toolbar_tokens=get_toolbar,
-                default='%s' % default,
-                style=toolbar_style)
-        except (KeyboardInterrupt, EOFError):
-            sys.exit(1)
+        message = prompt(
+            '>> ', multiline=True, completer=GitCompleter(),
+            display_completions_in_columns=True,
+            get_bottom_toolbar_tokens=get_toolbar,
+            key_bindings_registry=manager.registry,
+            default='%s' % default,
+            style=toolbar_style)
         file_obj.write(message)
         file_obj.truncate()
