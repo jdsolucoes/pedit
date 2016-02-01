@@ -177,5 +177,5 @@ if __name__ == '__main__':
             enable_system_bindings=True,
             style=toolbar_style)
 
-        file_obj.write(message)
+        file_obj.write(message.encode('utf-8'))
         file_obj.truncate()
