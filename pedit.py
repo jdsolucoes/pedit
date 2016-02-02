@@ -139,7 +139,7 @@ def get_toolbar(cli):
     if getattr(cli, 'push_after', False) is True:
         return [(Token.Toolbar, 'GIT Branch: '),
                 (Token.SCM, '%s' % get_current_branch()),
-                (Token.Toolbar, 'Pushing after commit')]
+                (Token.Toolbar, ' Pushing after commit')]
     date = datetime.now().strftime('%d/%m/%Y %H:%M')
     return [(Token.Toolbar, toolbar_text),
             (Token.Toolbar, date)]
