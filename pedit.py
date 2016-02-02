@@ -190,4 +190,4 @@ if __name__ == '__main__':
 
         file_obj.write(message.encode('utf-8'))
         file_obj.truncate()
-        os.system('git push origin %s' % get_current_branch())
+        # os.system('git push origin %s' % get_current_branch())
