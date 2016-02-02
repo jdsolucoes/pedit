@@ -47,6 +47,13 @@ def show_git(event):
     event.cli.run_in_terminal(quit_it)
 
 
+@manager.registry.add_binding(Keys.ControlP)
+def push_after(event):
+    def push():
+        event.cli.push_after = True
+    event.cli.run_in_terminal(push)
+
+
 def git_it(cmd):
     """Execute a GIT command and return the results"""
     output = subprocess.check_output(cmd).decode('utf-8').split('\n')
@@ -129,6 +136,10 @@ def get_toolbar(cli):
         cli.show_git = False
         return [(Token.Toolbar, 'GIT Branch: '),
                 (Token.SCM, '%s' % get_current_branch())]
+    if getattr(cli, 'push_after', False) is True:
+        return [(Token.Toolbar, 'GIT Branch: '),
+                (Token.SCM, '%s' % get_current_branch()),
+                (Token.Toolbar, 'Pushing after commit')]
     date = datetime.now().strftime('%d/%m/%Y %H:%M')
     return [(Token.Toolbar, toolbar_text),
             (Token.Toolbar, date)]
@@ -179,3 +190,4 @@ if __name__ == '__main__':
 
         file_obj.write(message.encode('utf-8'))
         file_obj.truncate()
+        os.system('git push origin')
