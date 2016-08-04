@@ -45,6 +45,6 @@ Interface provided by [prompt-toolkit](https://github.com/jonathanslenders/pytho
 TODO
 ====
 
- * Integration with Mercurial, Bazaar, etc
+ * Warn about long lines
  * Integration with the system's clipboard (yes, it's possible with readline)
  * Full featured support for pypy
